@@ -33,8 +33,8 @@ class AutoIncreament
 int AutoIncreament::k=0;
 class urlShortner
 {
-    static const int BASE=62;
-    static map<int,char> charMap;
+    static const int BASE=63;
+    map<int,char> charMap;
     map<int,string> m;
     map<string,int> url2id;
     AutoIncreament *A;
@@ -54,6 +54,8 @@ class urlShortner
             ans = 'a'+num-10;
         else if(num<=61)
             ans = 'A'+num-36;
+		else if(num==62)
+			ans = '/';
         else
             printf("wrong choice");
         return ans;
@@ -64,11 +66,13 @@ class urlShortner
         int num;
         if (c<='9')
             num = c-'0';
-        else if(c<='z')
-            num = c-'a'+10;
         else if (c<='Z')
             num = c - 'A' +36;
-        else
+        else if(c<='z')
+            num = c-'a'+10;
+        else if(c=='/')
+			num = 62;
+		else
             printf("wrong choice\n");
         return num;
     }
@@ -78,7 +82,7 @@ class urlShortner
         while(id>0)
         {
             int rem = id%BASE;
-            s = (getChar(rem)) + s;
+            s = (getChar(rem))+s;
             id = id/BASE;
         }
         return s;
@@ -91,7 +95,7 @@ class urlShortner
         {
             char c = s.at(pos);
             int k = getNum(c);;
-            ans = ans*62+k;
+            ans = ans*BASE+k;
             pos++;
         }
         return ans;
@@ -121,7 +125,7 @@ class urlShortner
         {
             it = url2id.find(url);
             int key = it->second;
-            ans = (m.find(key))->second;
+			ans = fromId(key);
         }
         return ans;
     }
@@ -142,9 +146,9 @@ int main()
     urlShortner *us = new urlShortner();
     vector<string> urls;
     vector<string> sUrls;
-    for(int i=0;i<1000;i++)
+    for(int i=0;i<100000;i++)
     {
-        urls.push_back("facebook"+patch::to_string(i));
+        urls.push_back("facebook.com/abhay/kumar"+patch::to_string(i));
     }
     for(int i=0;i<urls.size();i++)
     {
